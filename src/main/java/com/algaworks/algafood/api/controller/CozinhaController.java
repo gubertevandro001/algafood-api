@@ -1,7 +1,10 @@
 package com.algaworks.algafood.api.controller;
 
+import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
+import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.repository.CozinhaRepository;
+import com.algaworks.algafood.domain.service.CadastroCozinhaService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +20,9 @@ public class CozinhaController {
     @Autowired
     private CozinhaRepository cozinhaRepository;
 
+    @Autowired
+    private CadastroCozinhaService cadastroCozinhaService;
+
     @GetMapping
     public List<Cozinha> listar() {
         return cozinhaRepository.listar();
@@ -30,7 +36,7 @@ public class CozinhaController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Cozinha adicionar(@RequestBody Cozinha cozinha) {
-        return cozinhaRepository.salvar(cozinha);
+        return cadastroCozinhaService.salvar(cozinha);
     }
 
     @PutMapping("/{cozinhaId}")
@@ -39,7 +45,8 @@ public class CozinhaController {
 
         if (cozinhaAtual != null) {
             BeanUtils.copyProperties(cozinha, cozinhaAtual, "id");
-            cozinhaRepository.salvar(cozinhaAtual);
+
+            cadastroCozinhaService.salvar(cozinhaAtual);
             return ResponseEntity.ok(cozinhaAtual);
         }
 
@@ -48,13 +55,15 @@ public class CozinhaController {
 
     @DeleteMapping("/{cozinhaId}")
     public ResponseEntity<Void> remover(@PathVariable("cozinhaId") Long id) {
-        final var cozinha = cozinhaRepository.buscar(id);
-
-        if (cozinha != null) {
-            cozinhaRepository.remover(cozinha);
+        try {
+            cadastroCozinhaService.excluir(id);
             return ResponseEntity.noContent().build();
-        }
 
-        return ResponseEntity.notFound().build();
+        } catch (EntidadeNaoEncontradaException e) {
+            return ResponseEntity.notFound().build();
+
+        } catch (EntidadeEmUsoException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
     }
 }

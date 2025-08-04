@@ -17,6 +17,14 @@ public class Restaurante {
     @JoinColumn(name = "cozinha_id", nullable = false)
     private Cozinha cozinha;
 
+    public Cozinha getCozinha() {
+        return cozinha;
+    }
+
+    public void setCozinha(Cozinha cozinha) {
+        this.cozinha = cozinha;
+    }
+
     public Long getId() {
         return id;
     }
