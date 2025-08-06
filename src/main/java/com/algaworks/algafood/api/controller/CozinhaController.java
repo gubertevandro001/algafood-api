@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/cozinhas")
@@ -25,12 +26,18 @@ public class CozinhaController {
 
     @GetMapping
     public List<Cozinha> listar() {
-        return cozinhaRepository.listar();
+        return cozinhaRepository.findAll();
     }
 
     @GetMapping("/{cozinhaId}")
-    public Cozinha buscar(@PathVariable("cozinhaId") Long id) {
-        return cozinhaRepository.buscar(id);
+    public ResponseEntity<Cozinha> buscar(@PathVariable("cozinhaId") Long id) {
+        final var cozinha = cozinhaRepository.findById(id);
+
+        if (cozinha.isPresent()) {
+            return ResponseEntity.ok(cozinha.get());
+        }
+
+        return ResponseEntity.notFound().build();
     }
 
     @PostMapping
@@ -41,20 +48,20 @@ public class CozinhaController {
 
     @PutMapping("/{cozinhaId}")
     public ResponseEntity<Cozinha> atualizar(@PathVariable("cozinhaId") Long id, @RequestBody Cozinha cozinha) {
-        final var cozinhaAtual = cozinhaRepository.buscar(id);
+        final var cozinhaAtual = cozinhaRepository.findById(id);
 
-        if (cozinhaAtual != null) {
-            BeanUtils.copyProperties(cozinha, cozinhaAtual, "id");
+        if (cozinhaAtual.isPresent()) {
+            BeanUtils.copyProperties(cozinha, cozinhaAtual.get(), "id");
 
-            cadastroCozinhaService.salvar(cozinhaAtual);
-            return ResponseEntity.ok(cozinhaAtual);
+            Cozinha cozinhaSalva = cadastroCozinhaService.salvar(cozinhaAtual.get());
+            return ResponseEntity.ok(cozinhaSalva);
         }
 
         return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{cozinhaId}")
-    public ResponseEntity<Void> remover(@PathVariable("cozinhaId") Long id) {
+    public ResponseEntity<?> remover(@PathVariable("cozinhaId") Long id) {
         try {
             cadastroCozinhaService.excluir(id);
             return ResponseEntity.noContent().build();
@@ -63,7 +70,7 @@ public class CozinhaController {
             return ResponseEntity.notFound().build();
 
         } catch (EntidadeEmUsoException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
     }
 }
