@@ -4,6 +4,8 @@ import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
 import com.algaworks.algafood.domain.service.CadastroRestauranteService;
+import com.algaworks.algafood.infrastructure.repository.spec.RestauranteComFreteGratisSpec;
+import com.algaworks.algafood.infrastructure.repository.spec.RestauranteComNomeSemelhanteSpec;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -112,5 +114,13 @@ public class RestauranteController {
 
             ReflectionUtils.setField(field, restauranteDestino, novoValor);
         });
+    }
+
+    @GetMapping("/frete-gratis")
+    public List<Restaurante> restaurantesComFreteGratisTeste(String nome) {
+        var comFreteGratis = new RestauranteComFreteGratisSpec();
+        var comNomeSemelhante = new RestauranteComNomeSemelhanteSpec(nome);
+
+        return restauranteRepository.findAll(comFreteGratis.and(comNomeSemelhante));
     }
 }
