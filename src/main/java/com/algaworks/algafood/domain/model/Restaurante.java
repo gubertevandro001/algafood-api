@@ -28,7 +28,7 @@ public class Restaurante {
     @Column(name = "taxa_frete")
     private BigDecimal taxaFrete;
 
-    @JsonIgnore
+    //@JsonIgnore
    //@JsonIgnoreProperties({"hibernateLazyInitializer"})
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "cozinha_id", nullable = false)
