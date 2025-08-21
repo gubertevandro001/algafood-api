@@ -1,44 +1,29 @@
 package com.algaworks.algafood.domain.model;
 
+import com.algaworks.algafood.Groups;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 @Entity
+@Data
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Estado {
 
+    @NotNull(groups = Groups.EstadoId.class)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Long id;
+
+    @NotBlank
     private String nome;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Estado estado = (Estado) o;
-        return Objects.equals(id, estado.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
-    }
 }

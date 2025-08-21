@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -35,7 +36,7 @@ public class CidadeController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Cidade adicionar(@RequestBody Cidade cidade) {
+    public Cidade adicionar(@RequestBody @Valid Cidade cidade) {
         try {
             return cadastroCidadeService.adicionar(cidade);
         } catch (EstadoNaoEncontradoException ex) {
@@ -44,7 +45,7 @@ public class CidadeController {
     }
 
     @PutMapping("/{id}")
-    public Cidade atualizar(@PathVariable Long id, @RequestBody Cidade cidade) {
+    public Cidade atualizar(@PathVariable Long id, @RequestBody @Valid Cidade cidade) {
         try {
             var cidadeAtual = cadastroCidadeService.buscarOuFalhar(id);
 
