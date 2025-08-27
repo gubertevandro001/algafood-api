@@ -12,6 +12,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.util.ResourceUtils;
+import org.springframework.util.StreamUtils;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
@@ -28,6 +35,13 @@ class CadastroCozinhaIT {
 
 	@Autowired
 	private CozinhaRepository cozinhaRepository;
+
+	private Cozinha cozinhaAmericana;
+	private Cozinha cozinhaTailandesa;
+	private Integer totalCozinhas;
+
+	private static final Long COZINHA_ID_INEXISTENTE = 100L;
+	private static final String COZINHA_ID = "cozinhaId";
 
 	@BeforeEach
 	public void setUp() {
@@ -52,21 +66,20 @@ class CadastroCozinhaIT {
 	}
 
 	@Test
-	public void deveConter2Cozinhas_QuandoConsultarCozinhas() {
+	public void deveConterCozinhas_QuandoConsultarCozinhas() {
 
 		given()
 				.accept(ContentType.JSON)
 			.when()
 				.get()
 			.then()
-				.body("", hasSize(2))
-				.body("nome", hasItems("Tailandesa", "Americana"));
+				.body("", hasSize(totalCozinhas));
 	}
 
 	@Test
 	public void deveRetornarStatus201_QuandoCadastrarCozinha() {
 		given()
-			.body(" { \"nome\": \"Chinesa\" }")
+			.body(getContentFromResource())
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
 		.when()
@@ -78,19 +91,19 @@ class CadastroCozinhaIT {
 	@Test
 	public void deveRetornarResposaEStatusCorretos_QuandoConsultarCozinhaExistente() {
 		given()
-			.pathParam("cozinhaId", 1)
+			.pathParam(COZINHA_ID, cozinhaTailandesa.getId())
 			.accept(ContentType.JSON)
 		.when()
 			.get("/{cozinhaId}")
 		.then()
 			.statusCode(HttpStatus.OK.value())
-			.body("nome", equalTo("Tailandesa"));
+			.body("nome", equalTo(cozinhaTailandesa.getNome()));
 	}
 
 	@Test
 	public void deveRetornarStatus404_QuandoConsultarCozinhaInexistente() {
 		given()
-			.pathParam("cozinhaId", 100)
+			.pathParam(COZINHA_ID, COZINHA_ID_INEXISTENTE)
 			.accept(ContentType.JSON)
 		.when()
 			.get("/{cozinhaId}")
@@ -99,12 +112,24 @@ class CadastroCozinhaIT {
 	}
 
 	private void prepararDados() {
-		Cozinha cozinha1 = new Cozinha();
-		cozinha1.setNome("Tailandesa");
-		cozinhaRepository.save(cozinha1);
 
-		Cozinha cozinha2 = new Cozinha();
-		cozinha2.setNome("Americana");
-		cozinhaRepository.save(cozinha2);
+		cozinhaTailandesa = new Cozinha();
+		cozinhaTailandesa.setNome("Tailandesa");
+
+		cozinhaAmericana = new Cozinha();
+		cozinhaAmericana.setNome("Americana");
+
+		cozinhaRepository.saveAll(List.of(cozinhaTailandesa, cozinhaAmericana));
+
+		totalCozinhas = (int) cozinhaRepository.count();
+	}
+
+	private static String getContentFromResource() {
+		try {
+			InputStream stream = ResourceUtils.class.getResourceAsStream("/cozinha.json");
+			return StreamUtils.copyToString(stream, StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }
