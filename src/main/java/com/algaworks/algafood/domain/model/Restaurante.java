@@ -16,10 +16,10 @@ import javax.validation.constraints.PositiveOrZero;
 import javax.validation.groups.ConvertGroup;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@ValorZeroIncluiDescricao(valorField = "taxaFrete", descricaoField = "nome", descricaoObrigatoria = "Frete Grátis")
 @Entity
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -50,15 +50,13 @@ public class Restaurante {
     @Embedded
     private Endereco endereco;
 
-    @JsonIgnore
     @CreationTimestamp
     @Column(nullable = false, columnDefinition = "datetime")
-    private LocalDateTime dataCadastro;
+    private OffsetDateTime dataCadastro;
 
-    @JsonIgnore
     @UpdateTimestamp
     @Column(nullable = false, columnDefinition = "datetime")
-    private LocalDateTime dataAtualizacao;
+    private OffsetDateTime dataAtualizacao;
 
     @JsonIgnore
     @ManyToMany
