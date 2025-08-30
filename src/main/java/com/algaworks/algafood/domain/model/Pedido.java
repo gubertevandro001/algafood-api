@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,10 +22,10 @@ public class Pedido {
 
     private BigDecimal taxaFrete;
     private BigDecimal valorTotal;
-    private LocalDateTime dataCriacao;
-    private LocalDateTime dataConfirmacao;
-    private LocalDateTime dataCancelamento;
-    private LocalDateTime dataEntrega;
+    private OffsetDateTime dataCriacao;
+    private OffsetDateTime dataConfirmacao;
+    private OffsetDateTime dataCancelamento;
+    private OffsetDateTime dataEntrega;
 
     @Enumerated(EnumType.STRING)
     private StatusPedido status;

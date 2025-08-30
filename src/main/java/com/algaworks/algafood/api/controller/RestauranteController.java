@@ -1,8 +1,12 @@
 package com.algaworks.algafood.api.controller;
 
+import com.algaworks.algafood.api.model.CozinhaModel;
+import com.algaworks.algafood.api.model.RestauranteModel;
+import com.algaworks.algafood.api.model.input.RestauranteInput;
 import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.exception.ValidacaoException;
+import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
 import com.algaworks.algafood.domain.service.CadastroRestauranteService;
@@ -40,82 +44,70 @@ public class RestauranteController {
     private SmartValidator smartValidator;
 
     @GetMapping
-    public List<Restaurante> listar() {
-        return restauranteRepository.findAll();
+    public List<RestauranteModel> listar() {
+        return toCollectionModel(restauranteRepository.findAll());
     }
 
     @GetMapping("/{restauranteId}")
-    public Restaurante buscar(@PathVariable Long restauranteId) {
-        return cadastroRestauranteService.buscarOuFalhar(restauranteId);
+    public RestauranteModel buscar(@PathVariable Long restauranteId) {
+        Restaurante restaurante = cadastroRestauranteService.buscarOuFalhar(restauranteId);
+
+        return toModel(restaurante);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Restaurante adicionar(@RequestBody @Valid Restaurante restaurante) {
+    public RestauranteModel adicionar(@RequestBody @Valid RestauranteInput restauranteInput) {
         try {
-            return cadastroRestauranteService.salvar(restaurante);
+            return toModel(cadastroRestauranteService.salvar(toDomainObject(restauranteInput)));
         } catch (CozinhaNaoEncontradaException ex) {
             throw new NegocioException(ex.getMessage(), ex);
         }
     }
 
     @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public Restaurante atualizar(@PathVariable Long id, @RequestBody @Valid Restaurante restaurante) {
+    public RestauranteModel atualizar(@PathVariable Long id, @RequestBody @Valid RestauranteInput restauranteInput) {
         var restauranteAtual = cadastroRestauranteService.buscarOuFalhar(id);
 
-        BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formasPagamento", "endereco",
+        BeanUtils.copyProperties(toDomainObject(restauranteInput),
+                restauranteAtual, "id", "formasPagamento", "endereco",
                 "dataCadastro", "produtos");
 
         try {
-            return cadastroRestauranteService.salvar(restauranteAtual);
+            return toModel(cadastroRestauranteService.salvar(restauranteAtual));
         } catch (CozinhaNaoEncontradaException ex) {
             throw new NegocioException(ex.getMessage(), ex);
         }
     }
 
-    @PatchMapping("/{id}")
-    public Restaurante atualizarParcial(@PathVariable Long id, @RequestBody Map<String, Object> campos,
-                                        HttpServletRequest request) {
-        final var restauranteAtual = cadastroRestauranteService.buscarOuFalhar(id);
+    private RestauranteModel toModel(Restaurante restaurante) {
+        RestauranteModel restauranteModel = new RestauranteModel();
 
-        merge(campos, restauranteAtual, request);
-        validate(restauranteAtual, "restaurante");
+        CozinhaModel cozinhaModel = new CozinhaModel();
+        cozinhaModel.setId(restaurante.getCozinha().getId());
+        cozinhaModel.setNome(restaurante.getCozinha().getNome());
 
-        return atualizar(id, restauranteAtual);
+        restauranteModel.setId(restaurante.getId());
+        restauranteModel.setNome(restauranteModel.getNome());
+        restauranteModel.setTaxaFrete(restaurante.getTaxaFrete());
+        restauranteModel.setCozinha(cozinhaModel);
+        return restauranteModel;
     }
 
-    private void validate(Restaurante restaurante, String objectName) {
-        BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(restaurante, objectName);
-        smartValidator.validate(restaurante, bindingResult);
-
-        if (bindingResult.hasErrors()) {
-            throw new ValidacaoException(bindingResult);
-        }
+    private List<RestauranteModel> toCollectionModel(List<Restaurante> restaurantes) {
+        return restaurantes.stream().map(this::toModel).toList();
     }
 
-    private void merge(Map<String, Object> camposOrigem, Restaurante restauranteDestino, HttpServletRequest request) {
+    private Restaurante toDomainObject(RestauranteInput restauranteInput) {
+        Restaurante restaurante = new Restaurante();
+        restaurante.setNome(restauranteInput.getNome());
+        restaurante.setTaxaFrete(restauranteInput.getTaxaFrete());
 
-        ServletServerHttpRequest httpRequest = new ServletServerHttpRequest(request);
+        Cozinha cozinha = new Cozinha();
+        cozinha.setId(restauranteInput.getCozinha().getId());
 
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, true);
-            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
+        restaurante.setCozinha(cozinha);
 
-            Restaurante restauranteOrigem = objectMapper.convertValue(camposOrigem, Restaurante.class);
-
-            camposOrigem.forEach((nomePropriedade, valorPropriedade) -> {
-                Field field = ReflectionUtils.findField(Restaurante.class, nomePropriedade);
-                field.setAccessible(true);
-
-                Object novoValor = ReflectionUtils.getField(field, restauranteOrigem);
-
-                ReflectionUtils.setField(field, restauranteDestino, novoValor);
-            });
-        } catch (IllegalArgumentException ex) {
-             Throwable rootCause = ExceptionUtils.getRootCause(ex);
-             throw new HttpMessageNotReadableException(ex.getMessage(), rootCause, httpRequest);
-        }
+        return restaurante;
     }
 }
