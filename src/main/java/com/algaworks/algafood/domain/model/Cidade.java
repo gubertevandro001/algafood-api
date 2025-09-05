@@ -26,4 +26,5 @@ public class Cidade {
     @ConvertGroup(to = Groups.EstadoId.class)
     @ManyToOne
     private Estado estado;
+
 }
