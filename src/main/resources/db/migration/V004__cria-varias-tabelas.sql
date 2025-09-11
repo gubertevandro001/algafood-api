@@ -6,11 +6,11 @@ create table forma_pagamento (
 ) engine=InnoDB default charset=utf8;
 
 
-create table grupo (id bigint not null, nome varchar(255), primary key (id)) engine=InnoDB default charset=utf8;
+create table grupo (id bigint not null auto_increment, nome varchar(255), primary key (id)) engine=InnoDB default charset=utf8;
 
 create table grupo_permissao (grupo_id bigint not null, permissao_id bigint not null) engine=InnoDB default charset=utf8;
 create table permissao (id bigint not null, descricao varchar(255), primary key (id)) engine=InnoDB default charset=utf8;
-create table produto (id bigint not null, ativo bit not null, nome varchar(255), preco decimal(19,2),
+create table produto (id bigint not null auto_increment, ativo bit not null, nome varchar(255), preco decimal(19,2),
 restaurante_id bigint, primary key (id)) engine=InnoDB default charset=utf8;
 create table restaurante (id bigint not null auto_increment, data_atualizacao datetime not null, data_cadastro datetime not null,
 endereco_bairro varchar(255), endereco_cep varchar(255), endereco_complemento varchar(255),

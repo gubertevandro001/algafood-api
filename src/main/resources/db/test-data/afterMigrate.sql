@@ -31,3 +31,8 @@ insert ignore into cozinha (id, nome) values (2, 'Indiana');
 insert ignore into restaurante (id, nome, taxa_frete, cozinha_id, data_cadastro, data_atualizacao, ativo) values (1, 'Thai Gourmet', 5.0, 1, utc_timestamp, utc_timestamp, 1);
 insert ignore into restaurante (id, nome, taxa_frete, cozinha_id, data_cadastro, data_atualizacao, ativo) values (2, 'Curry House', 7.0, 2, utc_timestamp, utc_timestamp, 1);
 
+insert ignore into grupo (id, nome) values (1, 'Gerente');
+insert ignore into grupo (id, nome) values (2, 'Vendedor');
+insert ignore into grupo (id, nome) values (3, 'Secretária');
+insert ignore into grupo (id, nome) values (4, 'Cadastrador');
+
