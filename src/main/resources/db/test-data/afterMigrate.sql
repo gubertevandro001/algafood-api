@@ -36,3 +36,9 @@ insert ignore into grupo (id, nome) values (2, 'Vendedor');
 insert ignore into grupo (id, nome) values (3, 'Secretária');
 insert ignore into grupo (id, nome) values (4, 'Cadastrador');
 
+insert into usuario (id, nome, email, senha, data_cadastro) values
+(1, 'João da Silva', 'joao.ger@algafood.com', '123', utc_timestamp),
+(2, 'Maria Joaquina', 'maria.vnd@algafood.com', '123', utc_timestamp),
+(3, 'José Souza', 'jose.aux@algafood.com', '123', utc_timestamp),
+(4, 'Sebastião Martins', 'sebastiao.cad@algafood.com', '123', utc_timestamp);
+
