@@ -16,7 +16,7 @@ create table restaurante (id bigint not null auto_increment, data_atualizacao da
 endereco_bairro varchar(255), endereco_cep varchar(255), endereco_complemento varchar(255),
 endereco_logradouro varchar(255), endereco_numero varchar(255), nome varchar(255),
 taxa_frete decimal(19,2), cozinha_id bigint not null, endereco_cidade_id bigint, primary key (id)) engine=InnoDB default charset=utf8;
-create table restaurante_forma_pagamento (restaurante_id bigint not null, forma_pagamento_id bigint not null) engine=InnoDB default charset=utf8;
+create table restaurante_forma_pagamento (restaurante_id bigint not null, forma_pagamento_id bigint not null, unique key uk_rest_frm_pag (restaurante_id, forma_pagamento_id)) engine=InnoDB default charset=utf8;
 create table usuario (id bigint not null, data_cadastro datetime not null, email varchar(255), nome varchar(255), senha varchar(255),
 primary key (id)) engine=InnoDB default charset=utf8;
 create table usuario_grupo (usuario_id bigint not null, grupo_id bigint not null) engine=InnoDB default charset=utf8;
