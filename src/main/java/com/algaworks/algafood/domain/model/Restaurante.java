@@ -46,6 +46,8 @@ public class Restaurante {
     @Column(nullable = false, columnDefinition = "datetime")
     private OffsetDateTime dataAtualizacao;
 
+    private boolean aberto;
+
     @ManyToMany
     @JoinTable(name = "restaurante_forma_pagamento",
             joinColumns = @JoinColumn(name = "restaurante_id"),
@@ -71,7 +73,11 @@ public class Restaurante {
         return getFormasDePagamento().add(formaPagamento);
     }
 
-    public boolean adicionarProduto(Produto produto) {
-        return getProdutos().add(produto);
+    public void abrir() {
+        setAberto(true);
+    }
+
+    public void fechar() {
+        setAberto(false);
     }
 }

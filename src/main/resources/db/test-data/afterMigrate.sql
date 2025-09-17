@@ -28,8 +28,8 @@ alter table usuario auto_increment = 1;
 insert into cozinha (id, nome) values (1, 'Tailandesa');
 insert  into cozinha (id, nome) values (2, 'Indiana');
 
-insert  into restaurante (id, nome, taxa_frete, cozinha_id, data_cadastro, data_atualizacao, ativo) values (1, 'Thai Gourmet', 5.0, 1, utc_timestamp, utc_timestamp, 1);
-insert  into restaurante (id, nome, taxa_frete, cozinha_id, data_cadastro, data_atualizacao, ativo) values (2, 'Curry House', 7.0, 2, utc_timestamp, utc_timestamp, 1);
+insert  into restaurante (id, nome, taxa_frete, cozinha_id, data_cadastro, data_atualizacao, ativo, aberto) values (1, 'Thai Gourmet', 5.0, 1, utc_timestamp, utc_timestamp, 1, 1);
+insert  into restaurante (id, nome, taxa_frete, cozinha_id, data_cadastro, data_atualizacao, ativo, aberto) values (2, 'Curry House', 7.0, 2, utc_timestamp, utc_timestamp, 1, 1);
 
 insert  into forma_pagamento (id, descricao) values (1, 'Cartão de Crédito');
 insert  into forma_pagamento (id, descricao) values (2, 'Cartão de Débito');
