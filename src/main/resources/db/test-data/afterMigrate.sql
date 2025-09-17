@@ -39,6 +39,14 @@ insert  into restaurante_forma_pagamento (restaurante_id, forma_pagamento_id) va
 insert  into restaurante_forma_pagamento (restaurante_id, forma_pagamento_id) values (1, 2);
 insert  into restaurante_forma_pagamento (restaurante_id, forma_pagamento_id) values (1, 3);
 
+insert into produto(ativo, nome, descricao, preco, restaurante_id) values(true, 'Coca-Cola', 'Coquinha', 5.90, 1);
+insert into produto(ativo, nome, descricao, preco, restaurante_id) values(true, 'Macarrão', 'Macarrão bom', 2.90, 1);
+insert into produto(ativo, nome, descricao, preco, restaurante_id) values(true, 'Arroz', 'Arroz top', 12.90, 1);
+
+insert into produto(ativo, nome, descricao, preco, restaurante_id) values(true, 'Pepsi', 'Pepsizona', 4.90, 2);
+insert into produto(ativo, nome, descricao, preco, restaurante_id) values(true, 'Feijão', 'Feijão show de bola', 1.90, 2);
+insert into produto(ativo, nome, descricao, preco, restaurante_id) values(true, 'Carne', 'Carnaje', 34.90, 2);
+
 insert  into grupo (id, nome) values (1, 'Gerente');
 insert  into grupo (id, nome) values (2, 'Vendedor');
 insert  into grupo (id, nome) values (3, 'Secretária');
