@@ -18,7 +18,7 @@ taxa_frete decimal(19,2), cozinha_id bigint not null, endereco_cidade_id bigint,
 create table restaurante_forma_pagamento (restaurante_id bigint not null, forma_pagamento_id bigint not null, unique key uk_rest_frm_pag (restaurante_id, forma_pagamento_id)) engine=InnoDB default charset=utf8;
 create table usuario (id bigint not null, data_cadastro datetime not null, email varchar(255), nome varchar(255), senha varchar(255),
 primary key (id)) engine=InnoDB default charset=utf8;
-create table usuario_grupo (usuario_id bigint not null, grupo_id bigint not null) engine=InnoDB default charset=utf8;
+create table usuario_grupo (usuario_id bigint not null, grupo_id bigint not null, unique key uk_usr_grupo (usuario_id, grupo_id)) engine=InnoDB default charset=utf8;
 alter table grupo_permissao add constraint fk_permissao_grupo foreign key (permissao_id) references permissao (id);
 alter table grupo_permissao add constraint fk_grupo_permissao foreign key (grupo_id) references grupo (id);
 alter table produto add constraint fk_produto_restaurante foreign key (restaurante_id) references restaurante (id);
