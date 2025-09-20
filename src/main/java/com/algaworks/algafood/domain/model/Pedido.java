@@ -20,6 +20,7 @@ public class Pedido {
     private Long id;
 
     private BigDecimal taxaFrete;
+    private BigDecimal subtotal;
     private BigDecimal valorTotal;
     private OffsetDateTime dataCriacao;
     private OffsetDateTime dataConfirmacao;
@@ -27,7 +28,7 @@ public class Pedido {
     private OffsetDateTime dataEntrega;
 
     @Enumerated(EnumType.STRING)
-    private StatusPedido status;
+    private StatusPedido status = StatusPedido.CRIADO;
 
     @ManyToOne
     @JoinColumn(name = "cliente_id")
