@@ -18,7 +18,6 @@ public class Pedido {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private BigDecimal taxaFrete;
     private BigDecimal subtotal;
     private BigDecimal valorTotal;
@@ -31,7 +30,7 @@ public class Pedido {
     private StatusPedido status = StatusPedido.CRIADO;
 
     @ManyToOne
-    @JoinColumn(name = "cliente_id")
+    @JoinColumn(name = "usuario_cliente_id")
     private Usuario cliente;
 
     @ManyToOne

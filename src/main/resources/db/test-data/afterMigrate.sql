@@ -13,6 +13,8 @@ delete from restaurante_forma_pagamento;
 delete from usuario;
 delete from usuario_grupo;
 delete from restaurante_usuario_responsavel;
+delete from pedido;
+delete from item_pedido;
 
 set foreign_key_checks = 1;
 
@@ -85,38 +87,21 @@ insert into cidade (nome, estado_id) values ('Pato Branco', 3);
 insert into cidade (nome, estado_id) values ('Brusque', 2);
 insert into cidade (nome, estado_id) values ('Monte Verde', 1);
 
-insert into pedido (
+insert into pedido (id,
     subtotal, taxa_frete, valor_total,
     restaurante_id, usuario_cliente_id, forma_pagamento_id,
     endereco_cidade_id, endereco_cep, endereco_logradouro, endereco_numero,
     endereco_complemento, endereco_bairro,
-    status, data_criacao, data_confirmacao, data_cancelamento, data_entrega
-) values
-(120.00, 10.00, 130.00,
- 1, 1, 1,
- 1, '12345-678', 'Rua das Flores', '100', 'Apto 201', 'Centro',
- 'CRIADO', utc_timestamp, null, null, null),
+    status, data_criacao, data_confirmacao, data_cancelamento, data_entrega) values
+(1, 120.00, 10.00, 130.00, 1, 1, 1, 1, '12345-678', 'Rua das Flores', '100', 'Apto 201', 'Centro','CRIADO', utc_timestamp, null, null, null),
+(2, 85.50, 5.00, 90.50, 2, 2, 2, 2, '98765-432', 'Av. Brasil', '500', 'Teste', 'Jardins','CRIADO', utc_timestamp, utc_timestamp, null, null),
+(3, 60.00, 8.00, 68.00, 1, 2, 1, 1, '13579-246', 'Rua das Palmeiras', '50', 'Teste', 'Bela Vista', 'CRIADO', utc_timestamp, utc_timestamp, null, utc_timestamp);
 
-(85.50, 5.00, 90.50,
- 2, 2, 2,
- 2, '98765-432', 'Av. Brasil', '500', null, 'Jardins',
- 'CRIADO', utc_timestamp, utc_timestamp, null, null),
-
-(60.00, 8.00, 68.00,
- 1, 3, 1,
- 1, '13579-246', 'Rua das Palmeiras', '50', null, 'Bela Vista',
- 'CRIADO', utc_timestamp, utc_timestamp, null, utc_timestamp);
-
--- Inserindo itens de pedidos
-insert into item_pedido (
-    quantidade, preco_unitario, preco_total, observacao, pedido_id, produto_id
-) values
-(2, 30.00, 60.00, null, 1, 1),
-(1, 60.00, 60.00, null, 1, 2),
-
-(3, 25.00, 75.00, null, 2, 3),
-(1, 10.50, 10.50, null, 2, 4),
-
-(2, 20.00, 40.00, null, 3, 1),
-(1, 20.00, 20.00, null, 3, 5);
+insert into item_pedido (id, quantidade, preco_unitario, preco_total, observacao, pedido_id, produto_id) values
+(1, 2, 30.00, 60.00, null, 1, 1),
+(2, 1, 60.00, 60.00, null, 1, 2),
+(3, 3, 25.00, 75.00, null, 2, 3),
+(4, 1, 10.50, 10.50, null, 2, 4),
+(5, 2, 20.00, 40.00, null, 3, 1),
+(6, 1, 20.00, 20.00, null, 3, 5);
 
